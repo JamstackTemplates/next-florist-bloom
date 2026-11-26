@@ -1,69 +1,75 @@
-# JamstackTemplates Next.js starter
+# Wild Peony Florist
 
-The shared starter for Next.js templates in the `JamstackTemplates` organization. Its canonical home is
-`JamstackTemplates/template-next`, alongside the templates generated from it.
-It is not a gallery design or a published demo. Business content is sample content. No application code
-in a website created from this template depends on the starter checkout or the portal repository.
+A lush, botanical florist website built on the Jamstacks Next.js starter: arrangements in market buckets with
+swing-tag prices and an occasion filter, pressed-specimen wedding collections, a delivery-zone bloom map with a
+suburb lookup and a live same-day cut-off tag. Wild Peony is a **fictitious sample** for the Jamstacks gallery
+(`next-florist-bloom`); every name, number and address is made up. It is a self-contained static export and needs
+no server, database or portal checkout at runtime.
 
-## Build your website
+## Run it
 
-Start in the checkout of the repository GitHub created from `JamstackTemplates/template-next`. All
-starter files are already present. Local development requires Node 24 or later and npm.
+Requires Node 24+ and npm.
 
-To build a new site, fill in `plan/PLAN.md`, then tell the coding agent **`Implement plan/PLAN.md`**.
-In Claude Code, `/write-plan <business description>` drafts the brief for you. For a gallery template,
-pass the table row: `/write-plan next-type-style | Business | Description | Form purpose`.
-After reviewing the finished site, run `/cleanup-plan` or delete `plan/` and `.claude/skills/` by hand
-to remove all initial build instructions.
-
-To preview locally, run `npm ci` and `npm run dev` from the repository root.
+```sh
+npm ci
+npm run dev        # local development
+npm run check      # tests, typecheck and static build into out/
+npm start          # preview out/ like GitHub Pages would
+```
 
 ## Pages
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Minimal content-driven home page and Organization JSON-LD |
-| `/contact/` | Hosted support form when configured; visible email alternative |
-| `/404.html` | Friendly static error page |
+| `/` | Hero with the same-day swing tag, this week's stems, occasion envelopes, featured buckets, wedding teaser, delivery strip, studio hours, Florist JSON-LD |
+| `/arrangements/` | Every arrangement on the bucket shelves with petite/classic/lush prices, an occasion filter (`?occasion=<id>`), size guide and a by-occasion index |
+| `/weddings/` | Three collections as herbarium sheets, the piece-by-piece price ledger, process and seasons |
+| `/delivery/` | Suburb lookup, the three-zone bloom map, the cut-off peg timetable and delivery notes |
+| `/contact/` | Hosted enquiry form when configured, always the public email, phone, hours and message guidance |
+| `/404.html` | "This stem's wandered off" |
 
-## Make it yours
+## Everyday edits
 
-| File | Owns |
-| --- | --- |
-| `content/business.ts` | Shared business name, contact details and starter sample copy |
-| `app/page.tsx`, `app/<route>/page.tsx` | Page composition and editable copy such as headings and calls to action |
-| `content/menu.ts` or `content/services.ts` (add when needed) | Industry-specific typed collections |
-| `site.config.json` | Public name, description, hostname, optional timeZone and Jamstacks integration |
-| `app/tailwind.input.css` | Theme tokens, utility mappings and small shared styles |
-| `components/site-header.tsx`, `site-footer.tsx` | Replaceable navigation and visual shell |
-| `lib/structured-data.ts` | Schema type/properties derived from real content |
-| `app/sitemap.ts` | Public routes; update when adding a page |
+| To change… | Edit | Field or section |
+| --- | --- | --- |
+| This week's stems on Home | `content/in-season.ts` | `weekOf` (the Monday, `YYYY-MM-DD`) and each stem's `status`: `plenty`, `limited` ("a few left") or `last-week` ("nearly gone") |
+| An arrangement's price or availability | `content/arrangements.ts` | `prices.petite/classic/lush` (whole AUD, petite < classic < lush), `available: false` shows "Resting this week", `featured` puts it on Home (max four) |
+| A new arrangement | `content/arrangements.ts` | Copy an entry; give a unique lowercase `id`, `occasionIds` from `content/occasions.ts`, and an `art` recipe for its bucket illustration |
+| Same-day cut-off times | `content/delivery.ts` | `cutOffs` (HH:MM inside studio hours, or `null` for no deliveries) |
+| Public holidays | `content/delivery.ts` | `closures` (`{ date: 'YYYY-MM-DD', label }`); the tag and open-now status skip these days |
+| Suburbs and fees | `content/delivery.ts` | `deliveryZones[].suburbs` (`id`, `name`, four-digit `postcode`), `fee`, optional earlier `sameDayCutOffOverride` |
+| Wedding collections and pieces | `content/weddings.ts` | `weddingCollections`, `weddingPieces`, `weddingMinimumSpend`, `weddingSeasons` |
+| Email, phone, studio hours, message tips | `content/business.ts` | `email`, `phone`, `hours`, `location`, `enquiries.order` / `enquiries.wedding` |
+| Headings, introductions, button labels | the route's `app/**/page.tsx` | e.g. `<Hero.Heading>` in `app/page.tsx`, `<Collections.Heading>` in `app/weddings/page.tsx` |
+| Business name | `content/business.ts` `name` and `site.config.json` `name` | |
 
-Edit page copy in the route file, for example `<Hero.Heading>Seasonal flowers</Hero.Heading>`
-in `app/page.tsx` for the Home page. The backing
-component owns the styling and interactions. Use typed fields for data the site needs to look up or
-reuse. For example, change `business.email` to update Contact. Rename in `business.name` and
-`site.config.json.name`. Add a typed core-content file for frequent owner edits: a food menu should use
-the existing sections/items/price/availability model; changes such as sold out, seasonal or a new section
-should be data edits with actionable content tests. Do not add business content to configuration: the
-Jamstacks provisioner replaces that file wholesale, possibly adding `provisioningId`.
+For example, when the sweet peas finish, set that stem's `status: 'last-week'` in `content/in-season.ts`; Home
+shows "nearly gone". To rest an arrangement, set `available: false`; Arrangements greys its bucket and shows
+"Resting this week". Run `npm test` after editing: content checks fail with a message naming the item and field,
+such as `arrangement "peony-armful".prices: petite must cost less than classic`.
 
-## Appearance and optional local-business features
+Section components (`components/home-sections.tsx`, `arrangement-sections.tsx`, `wedding-sections.tsx`,
+`delivery-sections.tsx`, `contact-sections.tsx`) own markup, layout, art and accessibility. Page files hold the
+copy. Artwork is inline SVG in `components/art/`; there are no photographs or stock images.
 
-The starter uses system fonts, neutral Tailwind v4 tokens and the published `jamstacks` package's
-ThemeProvider, ThemeScript and DarkModeToggle. No font download or font licence file is needed for
-system fonts. Each designed template chooses and documents self-hosted font packages and their licences.
-Utilities live in components; colours originate in CSS tokens with light, automatic-dark and explicit-dark
-values plus `@theme inline` mappings. Keep the hosted form's primary fill dark enough for white text.
-Keyboard focus, reduced motion and print styles are included. The footer credit is yours to keep,
-reword or remove.
+## Time-based behaviour
 
-For a business with visiting hours, add address/directions/hours to typed content, set the IANA `timeZone`
-in site.config.json and use optional `GoogleMap`, `TimeZoneNote` and `OpenBadge` components. GoogleMap
-accepts an address and descriptive title; map helpers need no key. `OpenBadge` accepts seven
-`OpeningHours` records, uses the business zone and refreshes each minute in the browser; static/no-JS
-output is neutral. Same-day intervals only: overnight hours fail validation and need a tested extension
-before use. The baseline home page does not load a map or assert opening hours.
+All times are Melbourne time (`timeZone` in `site.config.json`). The same-day swing tag, the open-now badge, the
+suburb lookup's "Today" line and today's cut-off peg are computed in the browser and refresh every minute.
+The static page and visitors without JavaScript see neutral copy ("Same-day delivery: ask by 1pm weekdays,
+11am Saturdays" and the hours list). A zone's cut-off is the earlier of the day's cut-off and the zone's
+override. Dated closures are skipped when naming the next delivery day. Studio hours may not cross midnight;
+overnight hours fail validation.
+
+## Design
+
+"Market buckets and pressed specimens": tissue-blush paper, moss-ink type and peony-magenta actions by day;
+a greenhouse-green and aubergine cold room by night. Fonts are self-hosted from npm under the SIL Open
+Font Licence 1.1: Yeseva One (display), Cabin Variable (body; its condensed width is used for specimen labels)
+and Nothing You Could Do (handwriting on tags and cards). Colour tokens for light, automatic-dark and
+explicit-dark modes live in `app/tailwind.input.css` and are mapped through `@theme inline`. Illustrations
+use those tokens, so dark mode re-colours the same art. Printing drops art and keeps names, prices, hours and
+contact details.
 
 ## Public configuration
 
@@ -77,8 +83,8 @@ before use. The baseline home page does not load a map or assert opening hours.
 }
 ```
 
-The starter itself leaves domain/timeZone unset. Gallery templates use their folder name plus
-`.jamstacks.net`; customers replace the demo domain with their own. Do not invent canonical URLs when
+This sample uses `next-florist-bloom.jamstacks.net` and `Australia/Melbourne`; replace the demo domain
+with your own. Do not invent canonical URLs when
 the deployed address is unknown.
 
 | Environment variable | Public build-time meaning |
@@ -116,8 +122,9 @@ PAGES_BASE_PATH=/preview PAGES_BASE_URL=https://owner.github.io/preview npm run 
 npm start -- --base /preview --port 3000
 ```
 
-Tests cover config/provisioner compatibility, embed state, content rules, optional opening hours,
-and structured-data escaping. Typecheck uses Next's generated route types.
+Tests cover config/provisioner compatibility, embed state, content validation (with messages naming the
+item to fix), same-day cut-offs including zone overrides, closures and daylight-saving changes, studio
+open-now boundaries, the occasion filter, suburb lookup, Florist JSON-LD and enquiry wording. Typecheck uses Next's generated route types.
 When changing the Contact integration, base paths or canonical URLs, check the exported HTML and
 sitemap. Verify both configured and unconfigured Contact with the corresponding build settings.
 Test light/dark at desktop and mobile widths, keyboard navigation, unknown routes, repeated Contact
@@ -155,7 +162,7 @@ genuine screenshots before running its separate publishing test:
 
 ```sh
 node /home/mythz/src/mythz/jamstacks.net/tools/template-screenshots/capture.mjs \
-  --template /path/to/next-type-style --modes light,dark --executable /usr/bin/chromium
+  --template /path/to/next-florist-bloom
 node --test jamstacks/config.test.mjs
 ```
 

@@ -1,0 +1,22 @@
+{
+  "templateId": "next-florist-bloom",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "fullPage": false,
+  "captures": [
+    {
+      "mode": "light",
+      "sha256": "f4b07374542241ca74df84569041cf638886c73d3d40c5e2cd4d1b73ee1d7828",
+      "file": "jamstacks/home-light.jpg",
+      "bytes": 208929
+    },
+    {
+      "mode": "dark",
+      "sha256": "b5fb71baab809445cad48754407d9e428980a6c6f992477a07e11ecd4486722c",
+      "file": "jamstacks/home-dark.jpg",
+      "bytes": 183044
+    }
+  ]
+}

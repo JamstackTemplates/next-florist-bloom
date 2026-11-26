@@ -28,6 +28,21 @@ site.config.json. Keep the provisioner's config shape: name, description, domain
 jamstacks.siteId/cdnUrl and optional provisioningId. Business data never goes there. Reuse the design's
 illustrations and palette rather than adding unrelated assets.
 
+### Wild Peony file ownership
+
+- Page copy, in visitor order: `app/page.tsx`, `app/arrangements/page.tsx`, `app/weddings/page.tsx`,
+  `app/delivery/page.tsx`, `app/contact/page.tsx`, `app/not-found.tsx`.
+- Typed data: `content/business.ts` (contact, studio hours, message tips), `content/arrangements.ts`
+  (collection, sizes, bucket `art` recipes), `content/occasions.ts`, `content/in-season.ts` (weekly stems),
+  `content/weddings.ts`, `content/delivery.ts` (zones, suburbs, cut-offs, closures).
+- Validation: `lib/content-checks.ts` (item-specific failures, run by `tests/content.test.ts`).
+  Time logic: `lib/same-day.ts`, `lib/studio-hours.ts`, `lib/local-time.ts` (tested in `tests/same-day.test.ts`).
+- Sections: `components/*-sections.tsx`. Signature swing tag: `components/swing-tag.tsx` and the browser-only
+  `components/same-day-tag.tsx`. Other client components: `occasion-shelf.tsx`, `suburb-lookup.tsx`,
+  `cut-off-pegs.tsx`, `studio-status.tsx`, `reveal.tsx`.
+- Artwork (inline SVG, token colours, off-register outline style): `components/art/`.
+- `public/og.png` was composed from the hero art; regenerate it after changing the hero or name.
+
 ## Styling: Tailwind CSS v4
 
 Use utilities in components. `app/tailwind.input.css` owns tokens, theme mappings, base styles, small
@@ -72,3 +87,13 @@ and Pages never import/read it. Keep site.config.json, the form and workflow out
 light/dark captures after a fresh normal build and run node --test jamstacks/config.test.mjs separately.
 Each new template needs its own business-led layout/fonts/art and OG image; do not ship the neutral
 starter as a final design. Remove `plan/` and `.claude/skills/` before publishing a gallery template once reviewed.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
